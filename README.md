@@ -6,7 +6,7 @@
 * Notebook example in TF2 https://www.tensorflow.org/hub/tutorials/tf2_image_retraining
 
 ## TODO 
-1. Use opencv to get data frames from webcam and make predictions in real time
+1. Use opencv to get data frames from webcam and make predictions in real time (https://gogul.dev/software/hand-gesture-recognition-p1)
 2. Add layer to process individual prediction. Basic approach with moving average of predection. More complex approach with LSTM
 3. Analyze model performance and do fine tuning
 4. Use dataset with 200 signs https://chalearnlap.cvc.uab.cat/challenge/43/description/
@@ -28,4 +28,4 @@
 * Skeleton keypoints + Multiple CNN-3D
 
 ## Video processing
-* 
+* Hand recognition https://gogul.dev/software/hand-gesture-recognition-p1
