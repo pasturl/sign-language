@@ -3,4 +3,6 @@ tensorflow_hub
 tensorboard
 matplotlib
 tqdm
+opencv-python-headless
+opencv_contrib_python 
 opencv-python
