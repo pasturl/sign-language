@@ -1,4 +1,7 @@
 # sign-language
+# Download data
+Download dataset froom https://facundoq.github.io/datasets/lsa64/
+
 # Train the model
 To train the model run:
 python train_model.py
@@ -7,14 +10,13 @@ python train_model.py
 To run streamlit demo:
 streamlit run app.py
 
-## Steps
-Project structure
+## Project structure
 * data: 
-- move_videos_to_folder_categories
-- convert_video_to_frames_landmarks
+1. move_videos_to_folder_categories
+2. convert_video_to_frames_landmarks
 * model:
-- build_dataset
-- preprocess_dataset
+1. build_dataset
+2. preprocess_dataset
 * train_model
 * eval_model TODO
 * reduce_model_size TODO
