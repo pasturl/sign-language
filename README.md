@@ -8,13 +8,13 @@ To run streamlit demo:
 streamlit run app.py
 
 ## Steps
-###load_data
-###preprocess_data
-###prepare_dataset
-###load_model
-###train_model
-###eval_model TODO
-###reduce_model_size TODO
+*load_data
+*preprocess_data
+*prepare_dataset
+*load_model
+*train_model
+*eval_model TODO
+*reduce_model_size TODO
 
 
 ## DONE
