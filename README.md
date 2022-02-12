@@ -1,5 +1,4 @@
 # sign-language
-<<<<<<< HEAD
 ## Architecture
 ###load_data
 *download_data
@@ -11,11 +10,6 @@
 ###reduce_model_size
 
 
-
-
-
-=======
->>>>>>> develop
 ## DONE
 ### Retraining an Image Classifier using argentinian dataset
 * Based in https://github.com/hthuwal/sign-language-gesture-recognition
@@ -23,11 +17,7 @@
 * Notebook example in TF2 https://www.tensorflow.org/hub/tutorials/tf2_image_retraining
 
 ## TODO 
-<<<<<<< HEAD
-1. Use opencv to get data frames from webcam and make predictions in real time
-=======
 1. Use opencv to get data frames from webcam and make predictions in real time (https://gogul.dev/software/hand-gesture-recognition-p1)
->>>>>>> develop
 2. Add layer to process individual prediction. Basic approach with moving average of predection. More complex approach with LSTM
 3. Analyze model performance and do fine tuning
 4. Use dataset with 200 signs https://chalearnlap.cvc.uab.cat/challenge/43/description/
@@ -49,8 +39,4 @@
 * Skeleton keypoints + Multiple CNN-3D
 
 ## Video processing
-<<<<<<< HEAD
-* 
-=======
 * Hand recognition https://gogul.dev/software/hand-gesture-recognition-p1
->>>>>>> develop
