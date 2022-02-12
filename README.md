@@ -8,10 +8,13 @@ To run streamlit demo:
 streamlit run app.py
 
 ## Steps
-*load_data
-*preprocess_data
-*prepare_dataset
-*load_model
+Project structure
+*data: 
+- move_videos_to_folder_categories
+- convert_video_to_frames_landmarks
+*model:
+- build_dataset
+- preprocess_dataset
 *train_model
 *eval_model TODO
 *reduce_model_size TODO
