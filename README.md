@@ -1,12 +1,20 @@
 # sign-language
-## Architecture
+# Train the model
+To train the model run:
+python train_model.py
+
+# Streamlit demo
+To run streamlit demo:
+streamlit run app.py
+
+## Steps
 ###load_data
 ###preprocess_data
 ###prepare_dataset
 ###load_model
 ###train_model
-###eval_model
-###reduce_model_size
+###eval_model TODO
+###reduce_model_size TODO
 
 
 ## DONE
