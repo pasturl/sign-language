@@ -9,15 +9,15 @@ streamlit run app.py
 
 ## Steps
 Project structure
-*data: 
+* data: 
 - move_videos_to_folder_categories
 - convert_video_to_frames_landmarks
-*model:
+* model:
 - build_dataset
 - preprocess_dataset
-*train_model
-*eval_model TODO
-*reduce_model_size TODO
+* train_model
+* eval_model TODO
+* reduce_model_size TODO
 
 
 ## DONE
