@@ -9,10 +9,13 @@ python train_model.py
 # Streamlit demo
 To run streamlit demo:
 streamlit run app.py
+URL in streamlit cloud. Not working for problems with cv library
+https://share.streamlit.io/pasturl/sign-language/main/app.py
 
 # Streamlit demo
 To run streamlit demo with TFLite model (Not working)
 streamlit run app_lite.py
+
 
 ## Project structure
 * data: 
