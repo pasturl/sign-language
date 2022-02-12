@@ -23,14 +23,16 @@ streamlit run app.py
 
 
 ## DONE
-### Retraining an Image Classifier using argentinian dataset
+### Code refactor, predict in real time and streamlit demo (2022-02-12)
+* 
+### Retraining an Image Classifier using argentinian dataset (2021)
 * Based in https://github.com/hthuwal/sign-language-gesture-recognition
 * Dataset argentinian https://facundoq.github.io/datasets/lsa64/
 * Notebook example in TF2 https://www.tensorflow.org/hub/tutorials/tf2_image_retraining
 
 ## TODO 
-1. Use opencv to get data frames from webcam and make predictions in real time (https://gogul.dev/software/hand-gesture-recognition-p1)
-2. Add layer to process individual prediction. Basic approach with moving average of predection. More complex approach with LSTM
+1. (DONE 2022-02-12) Use opencv to get data frames from webcam and make predictions in real time (https://gogul.dev/software/hand-gesture-recognition-p1)
+2. (DONE 2022-02-12) Add layer to process individual prediction. Basic approach with moving average of predection. More complex approach with LSTM
 3. Analyze model performance and do fine tuning
 4. Use dataset with 200 signs https://chalearnlap.cvc.uab.cat/challenge/43/description/
 5. Use more complex model architecture https://github.com/jackyjsy/CVPR21Chal-SLR
