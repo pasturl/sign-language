@@ -9,9 +9,11 @@ log = logging.getLogger("Signem")
 
 def get_input_size_and_handle(model_name):
     model_handle_map = {
-        "efficientnetv2-s": "https://tfhub.dev/google/imagenet/efficientnet_v2_imagenet1k_s/feature_vector/2"}
+        "efficientnetv2-s": "https://tfhub.dev/google/imagenet/efficientnet_v2_imagenet1k_s/feature_vector/2",
+        "efficientnetv2-m": "https://tfhub.dev/google/imagenet/efficientnet_v2_imagenet1k_m/feature_vector/2"}
     model_image_size_map = {
-        "efficientnetv2-s": 384}
+        "efficientnetv2-s": 384,
+        "efficientnetv2-m": 480}
     model_handle = model_handle_map.get(model_name)
     pixels = model_image_size_map.get(model_name, 224)
 

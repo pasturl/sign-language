@@ -15,7 +15,7 @@ log = logging.getLogger("Signem")
 # https://drive.google.com/file/d/1C7k_m2m4n5VzI4lljMoezc-uowDEgIUh/view
 path_train_videos = "./data/train_videos/"
 path_train_frames = "./data/train_frames/"
-model_name = "efficientnetv2-s"
+model_name = "efficientnetv2-m"
 batch_size = 256
 do_data_augmentation = False
 do_fine_tuning = False
