@@ -1,0 +1,8 @@
+/data/*
+__pycache__/
+/notebooks/.ipynb_checkpoints/*
+/notebooks/trained_models/
+/notebooks/data/
+/notebooks/signs_model_10_efficientnetv2-s/
+/notebooks/mp_hand_gesture/
+/notebooks/data/

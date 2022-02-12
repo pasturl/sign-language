@@ -1,0 +1,5 @@
+tensorflow-gpu==2.8
+tensorflow_hub
+tensorboard
+matplotlib
+tqdm
