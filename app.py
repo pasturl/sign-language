@@ -10,7 +10,8 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
 
-class_names =["Opaque", "Red", "Green"]
+model_path = "./trained_models/signs_model_efficientnetv2-s_v0"
+class_names =["Sweet milk", "Argentina", "Barbecue", "Thanks"]
 frames_to_rolling_mean = 10
 predictions = []
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -30,12 +31,12 @@ FRAME_WINDOW = st.image([])
 camera = cv2.VideoCapture(0)
 
 
-def load_model():
-    model = tf.keras.models.load_model('./signs_model_efficientnetv2-s')
+def load_model(model_path):
+    model = tf.keras.models.load_model(model_path)
     return model
 
 
-model = load_model()
+model = load_model(model_path)
 width = model.input_shape[1]
 height = model.input_shape[2]
 dim = (width, height)
@@ -90,6 +91,6 @@ while run:
         # current_time = now.strftime("%H:%M:%S")
         # text_results = f"{current_time} Predicted label: {class_predicted} Probabilities: {rolling_mean_prediction}"
         # st.write(text_results)
-        time.sleep(0.2)
+        #time.sleep(0.2)
 else:
     st.write('Stopped')
