@@ -1,7 +1,6 @@
 # sign-language
 ## Architecture
 ###load_data
-*download_data
 ###preprocess_data
 ###prepare_dataset
 ###load_model

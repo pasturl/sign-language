@@ -13,19 +13,20 @@ log = logging.getLogger("Signem")
 # Download data from Mega or gdrive
 # https://mega.nz/file/kJBDxLSL#zamibF1KPtgQFHn3RM0L1WBuhcBUvo0N0Uec9hczK_M
 # https://drive.google.com/file/d/1C7k_m2m4n5VzI4lljMoezc-uowDEgIUh/view
-path_train_videos = "./data/train_videos/"
-path_train_frames = "./data/train_frames/"
-model_name = "efficientnetv2-m"
+path_train_videos = "./data/train_videos_sample/"
+path_train_frames = "./data/train_frames_sample/"
+model_name = "efficientnetv2-s"
 batch_size = 256
 do_data_augmentation = False
 do_fine_tuning = False
 
 log.info("Creating folder by category and moving videos from /all folder")
-#gitdata.move_videos_to_folder_categories(path_train_videos)
+#data.move_videos_to_folder_categories(path_train_videos)
 
 log.info("Converting videos to frames")
 # Use video-to-frame.py and handsegment function from repo https://github.com/hthuwal/sign-language-gesture-recognition
 #data.convert_video_to_frames(path_train_videos, path_train_frames)
+data.convert_video_to_frames_landmarks(path_train_videos, path_train_frames)
 
 log.info("Gettting model input size")
 image_size, model_handle = model.get_input_size_and_handle(model_name)
