@@ -1,23 +1,38 @@
 # sign-language
-## Architecture
-###load_data
-###preprocess_data
-###prepare_dataset
-###load_model
-###train_model
-###eval_model
-###reduce_model_size
+# Download data
+Download dataset froom https://facundoq.github.io/datasets/lsa64/
+
+# Train the model
+To train the model run:
+python train_model.py
+
+# Streamlit demo
+To run streamlit demo:
+streamlit run app.py
+
+## Project structure
+* data: 
+1. move_videos_to_folder_categories
+2. convert_video_to_frames_landmarks
+* model:
+1. build_dataset
+2. preprocess_dataset
+* train_model
+* eval_model TODO
+* reduce_model_size TODO
 
 
 ## DONE
-### Retraining an Image Classifier using argentinian dataset
+### Code refactor, predict in real time and streamlit demo (2022-02-12)
+* 
+### Retraining an Image Classifier using argentinian dataset (2021)
 * Based in https://github.com/hthuwal/sign-language-gesture-recognition
 * Dataset argentinian https://facundoq.github.io/datasets/lsa64/
 * Notebook example in TF2 https://www.tensorflow.org/hub/tutorials/tf2_image_retraining
 
 ## TODO 
-1. Use opencv to get data frames from webcam and make predictions in real time (https://gogul.dev/software/hand-gesture-recognition-p1)
-2. Add layer to process individual prediction. Basic approach with moving average of predection. More complex approach with LSTM
+1. (DONE 2022-02-12) Use opencv to get data frames from webcam and make predictions in real time (https://gogul.dev/software/hand-gesture-recognition-p1)
+2. (DONE 2022-02-12) Add layer to process individual prediction. Basic approach with moving average of predection. More complex approach with LSTM
 3. Analyze model performance and do fine tuning
 4. Use dataset with 200 signs https://chalearnlap.cvc.uab.cat/challenge/43/description/
 5. Use more complex model architecture https://github.com/jackyjsy/CVPR21Chal-SLR
