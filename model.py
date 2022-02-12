@@ -2,6 +2,7 @@ import logging
 import tensorflow as tf
 import tensorflow_hub as hub
 import matplotlib.pylab as plt
+import itertools
 
 
 log = logging.getLogger("Signem")
@@ -125,6 +126,7 @@ def train_model(model_handle, do_fine_tuning,
     saved_model_path = f"./trained_models/signs_model_{model_name}_{model_version}"
     tf.keras.models.save_model(model, saved_model_path)
     plot_loss_history(hist)
+    return model
 
 
 def plot_loss_history(hist):
@@ -141,3 +143,29 @@ def plot_loss_history(hist):
     plt.ylim([0, 1])
     plt.plot(hist["accuracy"])
     plt.plot(hist["val_accuracy"])
+
+
+def optimize_model_size(model_name, train_ds):
+    # @title Optimization settings
+    optimize_lite_model = True  # @param {type:"boolean"}
+    # @markdown Setting a value greater than zero enables quantization of neural network activations. A few dozen is already a useful amount.
+    num_calibration_examples = 60  # @param {type:"slider", min:0, max:1000, step:1}
+    representative_dataset = None
+    if optimize_lite_model and num_calibration_examples:
+        # Use a bounded number of training examples without labels for calibration.
+        # TFLiteConverter expects a list of input tensors, each with batch size 1.
+        representative_dataset = lambda: itertools.islice(
+            ([image[None, ...]] for batch, _ in train_ds for image in batch),
+            num_calibration_examples)
+    saved_model_path = f"./trained_models/signs_model_{model_name}_{model_version}"
+    converter = tf.lite.TFLiteConverter.from_saved_model(saved_model_path)
+    if optimize_lite_model:
+        converter.optimizations = [tf.lite.Optimize.DEFAULT]
+        if representative_dataset:  # This is optional, see above.
+            converter.representative_dataset = representative_dataset
+    lite_model_content = converter.convert()
+
+    with open(f"./trained_models/signs_model_{model_name}_{model_version}.tflite", "wb") as f:
+        f.write(lite_model_content)
+    print("Wrote %sTFLite model of %d bytes." %
+          ("optimized " if optimize_lite_model else "", len(lite_model_content)))

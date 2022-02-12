@@ -1,6 +1,6 @@
 # sign-language
 # Download data
-Download dataset froom https://facundoq.github.io/datasets/lsa64/
+Download dataset from https://facundoq.github.io/datasets/lsa64/
 
 # Train the model
 To train the model run:
@@ -9,6 +9,10 @@ python train_model.py
 # Streamlit demo
 To run streamlit demo:
 streamlit run app.py
+
+# Streamlit demo
+To run streamlit demo with TFLite model (Not working)
+streamlit run app_lite.py
 
 ## Project structure
 * data: 

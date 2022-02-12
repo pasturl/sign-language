@@ -19,6 +19,7 @@ model_name = "efficientnetv2-s"
 batch_size = 256
 do_data_augmentation = False
 do_fine_tuning = False
+do_train = False
 
 log.info("Creating folder by category and moving videos from /all folder")
 #data.move_videos_to_folder_categories(path_train_videos)
@@ -65,18 +66,17 @@ val_ds = val_ds.unbatch().batch(batch_size)
 log.info("Preprocessing validation dataset")
 val_ds = model.preprocess_dataset(val_ds, normalization_layer)
 
-log.info(f"Building model: {model_name}")
-#model_built = model.build_model(model_handle, do_fine_tuning,
-#                               class_names_train, image_size)
+if do_train:
+    log.info("Training model")
+    model = model.train_model(model_handle, do_fine_tuning,
+                              class_names_train, image_size,
+                              batch_size,
+                              ds_size_train, ds_size_val,
+                              train_ds, val_ds, model_name)
 
-log.info("Training model")
-model.train_model(model_handle, do_fine_tuning,
-                  class_names_train, image_size,
-                  batch_size,
-                  ds_size_train, ds_size_val,
-                  train_ds, val_ds, model_name)
 
-log.info("Plot loss history")
-#model.plot_loss_history(hist)
+log.info("Optimizing model size")
+model.optimize_model_size(model_name, train_ds)
+
 
 
