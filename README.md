@@ -10,6 +10,9 @@ python train_model.py
 To run streamlit demo:
 streamlit run app.py
 
+URL in streamlit cloud. Not working for problems with cv library
+https://share.streamlit.io/pasturl/sign-language/main/app.py
+
 ## Project structure
 * data: 
 1. move_videos_to_folder_categories
