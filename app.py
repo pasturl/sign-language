@@ -31,7 +31,7 @@ camera = cv2.VideoCapture(0)
 
 
 def load_model():
-    model = tf.keras.models.load_model('trained_models/signs_model_efficientnetv2-s')
+    model = tf.keras.models.load_model('signs_model_efficientnetv2-s')
     return model
 
 

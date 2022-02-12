@@ -26,7 +26,7 @@ log.info("Creating folder by category and moving videos from /all folder")
 log.info("Converting videos to frames")
 # Use video-to-frame.py and handsegment function from repo https://github.com/hthuwal/sign-language-gesture-recognition
 #data.convert_video_to_frames(path_train_videos, path_train_frames)
-data.convert_video_to_frames_landmarks(path_train_videos, path_train_frames)
+#data.convert_video_to_frames_landmarks(path_train_videos, path_train_frames)
 
 log.info("Gettting model input size")
 image_size, model_handle = model.get_input_size_and_handle(model_name)

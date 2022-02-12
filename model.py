@@ -119,7 +119,7 @@ def train_model(model_handle, do_fine_tuning,
     validation_steps = valid_size // batch_size
     hist = model.fit(
         train_ds,
-        epochs=5, steps_per_epoch=steps_per_epoch,
+        epochs=20, steps_per_epoch=steps_per_epoch,
         validation_data=val_ds,
         validation_steps=validation_steps).history
     saved_model_path = f"./trained_models/signs_model_{model_name}_{model_version}"
