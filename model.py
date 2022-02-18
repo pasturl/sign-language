@@ -6,7 +6,7 @@ import itertools
 
 
 log = logging.getLogger("Signem")
-model_version = "v0"
+model_version = "v1"
 
 def get_input_size_and_handle(model_name):
     model_handle_map = {
@@ -120,7 +120,7 @@ def train_model(model_handle, do_fine_tuning,
     validation_steps = valid_size // batch_size
     hist = model.fit(
         train_ds,
-        epochs=10, steps_per_epoch=steps_per_epoch,
+        epochs=50, steps_per_epoch=steps_per_epoch,
         validation_data=val_ds,
         validation_steps=validation_steps).history
     saved_model_path = f"./trained_models/signs_model_{model_name}_{model_version}"
