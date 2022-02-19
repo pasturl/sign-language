@@ -40,9 +40,11 @@ streamlit run app_lite.py
 ## TODO 
 1. (DONE 2022-02-12) Use opencv to get data frames from webcam and make predictions in real time (https://gogul.dev/software/hand-gesture-recognition-p1)
 2. (DONE 2022-02-12) Add layer to process individual prediction. Basic approach with moving average of predection. More complex approach with LSTM
-3. Analyze model performance and do fine tuning
-4. Use dataset with 200 signs https://chalearnlap.cvc.uab.cat/challenge/43/description/
-5. Use more complex model architecture https://github.com/jackyjsy/CVPR21Chal-SLR
+3. Use RNN feed with CNN output
+4. Split train-test with new people in test 
+5. Analyze model performance and do fine tuning
+6. Use dataset with 200 signs https://chalearnlap.cvc.uab.cat/challenge/43/description/
+7. Use more complex model architecture with multi-input https://github.com/jackyjsy/CVPR21Chal-SLR
 
 ## Nice to have
 * Create virtual environment (requeriments or docker)

@@ -10,8 +10,10 @@ model_version = "v1"
 
 def get_input_size_and_handle(model_name):
     model_handle_map = {
-        "efficientnetv2-s": "https://tfhub.dev/google/imagenet/efficientnet_v2_imagenet1k_s/feature_vector/2",
-        "efficientnetv2-m": "https://tfhub.dev/google/imagenet/efficientnet_v2_imagenet1k_m/feature_vector/2"}
+        "efficientnetv2-s":
+            "https://tfhub.dev/google/imagenet/efficientnet_v2_imagenet1k_s/feature_vector/2",
+        "efficientnetv2-m":
+            "https://tfhub.dev/google/imagenet/efficientnet_v2_imagenet1k_m/feature_vector/2"}
     model_image_size_map = {
         "efficientnetv2-s": 384,
         "efficientnetv2-m": 480}
@@ -41,14 +43,14 @@ def build_dataset(subset, data_dir, image_size):
     return train_ds
 
 
-def get_class_names(ds):
-    class_names = tuple(ds.class_names)
+def get_class_names(dataset):
+    class_names = tuple(dataset.class_names)
     return class_names
 
 
-def get_ds_size(ds):
-    ds_size = ds.cardinality().numpy()
-    return ds_size
+def get_ds_size(dataset):
+    dataset_size = dataset.cardinality().numpy()
+    return dataset_size
 
 
 def build_preprocessing_model():
@@ -120,7 +122,7 @@ def train_model(model_handle, do_fine_tuning,
     validation_steps = valid_size // batch_size
     hist = model.fit(
         train_ds,
-        epochs=50, steps_per_epoch=steps_per_epoch,
+        epochs=10, steps_per_epoch=steps_per_epoch,
         validation_data=val_ds,
         validation_steps=validation_steps).history
     saved_model_path = f"./trained_models/signs_model_{model_name}_{model_version}"
@@ -148,7 +150,8 @@ def plot_loss_history(hist):
 def optimize_model_size(model_name, train_ds):
     # @title Optimization settings
     optimize_lite_model = True  # @param {type:"boolean"}
-    # @markdown Setting a value greater than zero enables quantization of neural network activations. A few dozen is already a useful amount.
+    # @markdown Setting a value greater than zero enables
+    # quantization of neural network activations. A few dozen is already a useful amount.
     num_calibration_examples = 60  # @param {type:"slider", min:0, max:1000, step:1}
     representative_dataset = None
     if optimize_lite_model and num_calibration_examples:
