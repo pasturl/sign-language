@@ -174,8 +174,6 @@ def convert_video_to_frames_hands_landmarks(path_videos, path_frames):
         os.chdir(rootPath)
 
 
-
-
 def convert_video_to_frames_holistic_landmarks(path_videos, path_frames):
     mp_drawing = mp.solutions.drawing_utils
     mp_drawing_styles = mp.solutions.drawing_styles
@@ -193,7 +191,7 @@ def convert_video_to_frames_holistic_landmarks(path_videos, path_frames):
     log.info("Source Directory containing gestures: %s" % (path_videos))
     log.info("Destination Directory containing frames: %s\n" % (majorData))
     with mp_holistic.Holistic(
-            model_complexity=1,
+            model_complexity=2,
             min_detection_confidence=0.5,
             min_tracking_confidence=0.5) as holistic:
 
@@ -222,7 +220,7 @@ def convert_video_to_frames_holistic_landmarks(path_videos, path_frames):
                     if ret is False:
                         break
                     framename = os.path.splitext(video)[0]
-                    framename = framename + "_frame_" + str(count) + ".jpeg"
+                    framename = framename + "_frame_" + str(count).zfill(3) + ".jpeg"
                     hc.append([join(gesture_frames_path, framename), gesture, frameCount])
 
                     if not os.path.exists(framename):

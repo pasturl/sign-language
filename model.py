@@ -6,7 +6,7 @@ import itertools
 
 
 log = logging.getLogger("Signem")
-model_version = "v1"
+model_version = "v3"
 
 def get_input_size_and_handle(model_name):
     model_handle_map = {
@@ -115,14 +115,14 @@ def train_model(model_handle, do_fine_tuning,
     model.summary()
 
     model.compile(
-        optimizer=tf.keras.optimizers.SGD(learning_rate=0.01, momentum=0.9),
+        optimizer=tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9),
         loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True, label_smoothing=0.1),
         metrics=['accuracy'])
     steps_per_epoch = train_size // batch_size
     validation_steps = valid_size // batch_size
     hist = model.fit(
         train_ds,
-        epochs=10, steps_per_epoch=steps_per_epoch,
+        epochs=1, steps_per_epoch=steps_per_epoch,
         validation_data=val_ds,
         validation_steps=validation_steps).history
     saved_model_path = f"./trained_models/signs_model_{model_name}_{model_version}"
