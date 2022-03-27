@@ -3,10 +3,19 @@ import tensorflow as tf
 import tensorflow_hub as hub
 import matplotlib.pylab as plt
 import itertools
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, accuracy_score
+import seaborn as sns
+from os import walk, listdir
+import datetime
 
 
 log = logging.getLogger("Signem")
-model_version = "v3"
+model_version = "v9"
+EPOCHS = 30
+LEARNING_RATE = 0.1
 
 def get_input_size_and_handle(model_name):
     model_handle_map = {
@@ -89,7 +98,7 @@ def build_model(model_handle, do_fine_tuning, class_names, image_size):
         # loaded by the TFLiteConverter
         tf.keras.layers.InputLayer(input_shape=image_size + (3,)),
         hub.KerasLayer(model_handle, trainable=do_fine_tuning),
-        tf.keras.layers.Dropout(rate=0.2),
+        #tf.keras.layers.Dropout(rate=0.2),
         tf.keras.layers.Dense(len(class_names),
                               kernel_regularizer=tf.keras.regularizers.l2(0.0001))
     ])
@@ -107,27 +116,75 @@ def train_model(model_handle, do_fine_tuning,
         # loaded by the TFLiteConverter
         tf.keras.layers.InputLayer(input_shape=image_size + (3,)),
         hub.KerasLayer(model_handle, trainable=do_fine_tuning),
-        tf.keras.layers.Dropout(rate=0.2),
+        #tf.keras.layers.Dropout(rate=0.2),
         tf.keras.layers.Dense(len(class_names),
                               kernel_regularizer=tf.keras.regularizers.l2(0.0001))
     ])
     model.build((None,) + image_size + (3,))
     model.summary()
-
     model.compile(
-        optimizer=tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9),
+        optimizer=tf.keras.optimizers.SGD(learning_rate=LEARNING_RATE, momentum=0.9),
         loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True, label_smoothing=0.1),
         metrics=['accuracy'])
     steps_per_epoch = train_size // batch_size
     validation_steps = valid_size // batch_size
+    log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir,
+                                                          histogram_freq=1, write_images=False,)
+    file_writer = tf.summary.create_file_writer(log_dir + '/cm')
+
+    # def log_confusion_matrix(epoch, logs):
+    #     # Use the model to predict the values from the validation dataset.
+    #     test_pred_raw = model.predict(val_ds)
+    #     test_pred = np.argmax(test_pred_raw, axis=1)
+    #
+    #     # Calculate the confusion matrix.
+    #     cm = sklearn.metrics.confusion_matrix(test_labels, test_pred)
+    #     # Log the confusion matrix as an image summary.
+    #     figure = plot_confusion_matrix(cm, class_names=class_names)
+    #     cm_image = plot_to_image(figure)
+    #
+    #     # Log the confusion matrix as an image summary.
+    #     with file_writer_cm.as_default():
+    #         tf.summary.image("Confusion Matrix", cm_image, step=epoch)
+    #
+    # # Define the per-epoch callback.
+    # cm_callback = keras.callbacks.LambdaCallback(on_epoch_end=log_confusion_matrix)
+
     hist = model.fit(
         train_ds,
-        epochs=1, steps_per_epoch=steps_per_epoch,
+        epochs=EPOCHS, steps_per_epoch=steps_per_epoch,
         validation_data=val_ds,
-        validation_steps=validation_steps).history
+        validation_steps=validation_steps,
+          callbacks=[tensorboard_callback]).history
+    print("Train eval")
+    model.evaluate(train_ds, batch_size=batch_size, steps=steps_per_epoch)
+    print("Validation eval")
+    model.evaluate(val_ds, batch_size=batch_size, steps=steps_per_epoch)
+
     saved_model_path = f"./trained_models/signs_model_{model_name}_{model_version}"
     tf.keras.models.save_model(model, saved_model_path)
     plot_loss_history(hist)
+    y_labels = []
+    predictions = []
+    for x, y in val_ds:
+        prediction_x = model.predict(x)
+        predict_label = np.argmax(prediction_x, axis=1)
+        predictions.append(predict_label)
+        y_true = np.argmax(y, axis=1)
+        y_labels.append(y_true)
+
+    y_labels = flatten(y_labels)
+    predictions = flatten(predictions)
+    df_eval = pd.DataFrame({'y_true': y_labels,
+                             'y_pred': predictions})
+
+    df_eval.to_csv("ds_pred_in_train.csv", index=False, sep=";")
+    y_true = df_eval["y_true"].astype(int)
+    y_pred = df_eval["y_pred"].astype(int)
+    accuracy_train = accuracy_score(y_true, y_pred)
+    print(f"Train accuracy {accuracy_train}")
     return model
 
 
@@ -145,6 +202,7 @@ def plot_loss_history(hist):
     plt.ylim([0, 1])
     plt.plot(hist["accuracy"])
     plt.plot(hist["val_accuracy"])
+    plt.savefig("plot_train_history.png")
 
 
 def optimize_model_size(model_name, train_ds):
@@ -172,3 +230,67 @@ def optimize_model_size(model_name, train_ds):
         f.write(lite_model_content)
     print("Wrote %sTFLite model of %d bytes." %
           ("optimized " if optimize_lite_model else "", len(lite_model_content)))
+
+
+def eval_model(model_trained, data_path):
+    categories = pd.read_csv("category_mapping.csv", sep=";")
+    categories["ID_str"] = categories["ID"].apply(lambda x: str(x).zfill(3))
+    categories_to_ID = dict(zip(categories["ID_str"], categories["Name"]))
+    video_categories = listdir(data_path)
+    image_files = []
+    for category in video_categories:
+        category_path = data_path + "/" + category
+        image_files_category = listdir(category_path)
+        image_files = image_files + image_files_category
+    dataset = pd.DataFrame()
+    dataset["frames_files"] = image_files
+    dataset["category_ID"] = dataset["frames_files"].apply(lambda x: x[:3])
+    dataset["category_name"] = dataset["category_ID"].apply(lambda x: categories_to_ID[x])
+    dataset["person_ID"] = dataset["frames_files"].apply(lambda x: x[4:7])
+
+    width = 384
+    height = 384
+    dataset_tf = tf.keras.preprocessing.image_dataset_from_directory(data_path,
+                                                                     image_size=(width, height),
+                                                                     labels='inferred',
+                                                                     label_mode='categorical')
+    preprocessing_model, normalization_layer = build_preprocessing_model()
+    dataset_tf = preprocess_dataset(dataset_tf, preprocessing_model)
+
+    predictions = []
+    y_labels = []
+    for x, y in dataset_tf:
+        prediction_x = model_trained.predict(x)
+        predict_label = np.argmax(prediction_x, axis=1)
+        predictions.append(predict_label)
+        y_true = np.argmax(y, axis=1)
+        y_labels.append(y_true)
+
+    y_labels = flatten(y_labels)
+    predictions = flatten(predictions)
+    #predict_prob = model_trained.predict(dataset_tf)
+    #predict = np.argmax(predict_prob, axis=1)
+    tf.math.confusion_matrix(labels=y_labels, predictions=predictions).numpy()
+
+    #y_true = dataset["category_ID"].astype(int).values
+    df_eval = pd.DataFrame({'y_true': y_labels,
+                             'y_pred': predictions})
+    y_true = df_eval["y_true"]
+    y_pred = df_eval["y_pred"]
+    accuracy_train = accuracy_score(y_true, y_pred)
+    print(f"Train accuracy {accuracy_train}")
+    df_eval.to_csv("ds_pred.csv", index=False, sep=";")
+
+    # Confusion matrix for actual and predicted values.
+    cm = confusion_matrix(y_true, y_pred)
+    cm_df = pd.DataFrame(cm)
+    # Plotting the confusion matrix
+    plt.figure(figsize=(16, 12))
+    sns.heatmap(cm_df, annot=True)
+    plt.title('Confusion Matrix')
+    plt.ylabel('Actual Values')
+    plt.xlabel('Predicted Values')
+    plt.savefig("heatmap.png")
+
+def flatten(t):
+    return [item for sublist in t for item in sublist]

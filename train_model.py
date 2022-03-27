@@ -15,6 +15,8 @@ log = logging.getLogger("Signem")
 # https://drive.google.com/file/d/1C7k_m2m4n5VzI4lljMoezc-uowDEgIUh/view
 path_train_videos = "./data/train_videos/"
 path_train_frames = "./data/train_frames/"
+path_train_one_frame = "./data/train_one_frame/"
+
 model_name = "efficientnetv2-s"
 batch_size = 256
 do_data_augmentation = False
@@ -30,11 +32,13 @@ log.info("Converting videos to frames")
 #data.convert_video_to_frames_hands_landmarks(path_train_videos, path_train_frames)
 #data.convert_video_to_frames_holistic_landmarks(path_train_videos, path_train_frames)
 
+#data.blend_frames_to_one(path_train_frames, path_train_one_frame)
+
 log.info("Gettting model input size")
 image_size, model_handle = model.get_input_size_and_handle(model_name)
 
 log.info("Building training dataset")
-train_ds = model.build_dataset("training", path_train_frames, image_size)
+train_ds = model.build_dataset("training", path_train_one_frame, image_size)
 
 log.info("Getting class names of training data")
 class_names_train = model.get_class_names(train_ds)
@@ -56,7 +60,7 @@ log.info("Preprocessing training dataset")
 train_ds = model.preprocess_dataset(train_ds, preprocessing_model)
 
 log.info("Building validation dataset")
-val_ds = model.build_dataset("validation", path_train_frames, image_size)
+val_ds = model.build_dataset("validation", path_train_one_frame, image_size)
 
 log.info("Getting dataset size of validation data")
 ds_size_val = model.get_ds_size(val_ds)
@@ -75,9 +79,11 @@ if do_train:
                                       ds_size_train, ds_size_val,
                                       train_ds, val_ds, model_name)
 
+model.eval_model(model_trained, path_train_one_frame)
+
 
 log.info("Optimizing model size")
-model.optimize_model_size(model_name, train_ds)
+#model.optimize_model_size(model_name, train_ds)
 
 
 

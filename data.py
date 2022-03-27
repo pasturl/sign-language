@@ -7,6 +7,7 @@ from tqdm import tqdm
 import logging
 import mediapipe as mp
 import numpy as np
+import pandas as pd
 
 hc = []
 log = logging.getLogger("Signem")
@@ -267,3 +268,57 @@ def convert_video_to_frames_holistic_landmarks(path_videos, path_frames):
                 cv2.destroyAllWindows()
 
         os.chdir(rootPath)
+
+
+def blend(list_images):  # Blend images equally.
+
+    equal_fraction = 1.0  # / (len(list_images))
+
+    output = np.zeros_like(list_images[0])
+
+    for img in list_images:
+        output = output + img * equal_fraction
+
+    output = output.astype(np.uint8)
+    return output
+
+
+def blend_frames_to_one(path_input, path_output):
+    categories = pd.read_csv("category_mapping.csv", sep=";")
+    categories["ID_str"] = categories["ID"].apply(lambda x: str(x).zfill(3))
+    categories_to_ID = dict(zip(categories["ID_str"], categories["Name"]))
+
+
+    video_categories = listdir(path_input)
+    image_files = []
+    for category in video_categories:
+        category_path = path_input + "/" + category
+        image_files_category = listdir(category_path)
+        image_files = image_files + image_files_category
+
+    dataset = pd.DataFrame()
+    dataset["frames_files"] = image_files
+    dataset["category_ID"] = dataset["frames_files"].apply(lambda x: x[:3])
+    dataset["category_name"] = dataset["category_ID"].apply(lambda x: categories_to_ID[x])
+    dataset["person_ID"] = dataset["frames_files"].apply(lambda x: x[4:7])
+    dataset["video_ID"] = dataset["frames_files"].apply(lambda x: x[:11])
+    dataset["video_path"] = path_input + "/" + dataset["category_ID"] + "/" + dataset["frames_files"]
+    dataset["frame_ID"] = dataset["frames_files"].apply(lambda x: int(x.split("frame_")[1].split(".")[0]))
+    MAX_SEQ_LENGTH = dataset["frame_ID"].max() + 1
+    print(MAX_SEQ_LENGTH)
+
+    total_videos = len(dataset["video_ID"].unique())
+    n_video = 0
+    for video in dataset["video_ID"].unique():
+        print(f"{n_video}/{total_videos}")
+        list_images = []
+        one_frame_path = path_output + video[:3] + "/"
+        if not os.path.exists(one_frame_path):
+            os.makedirs(one_frame_path)
+        for frame in dataset[dataset["video_ID"] == video].sort_values("frame_ID")["video_path"]:
+            img = cv2.imread(frame)
+            list_images.append(img)
+        output_images_blend = blend(list_images)
+        output_path_video = path_output + video[:3] + "/" + video + ".jpeg"
+        cv2.imwrite(output_path_video, output_images_blend)
+        n_video += 1

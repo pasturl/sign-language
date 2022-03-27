@@ -9,3 +9,4 @@ __pycache__/
 /notebooks/data/
 /.idea/
 debug.log
+/ipynb_checkpoints
